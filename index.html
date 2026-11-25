@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>测测你是哪种猫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet" />
+<style>
+:root {
+--bg: #fff4e3;
+--bg-soft: #ffe9cd;
+--card: #fffdf7;
+--ink: #4a3222;
+--ink-soft: #8a6a52;
+--accent: #ef8322;
+--accent-deep: #d96f0e;
+--accent-soft: #ffe3bd;
+--line: #f2d7b4;
+--good: #3d9d63;
+--shadow: 0 10px 30px rgba(190, 110, 30, 0.16);
+--radius: 22px;
+}
+@media (prefers-color-scheme: dark) {
+:root {
+--bg: #261a10;
+--bg-soft: #33220f;
+--card: #38271a;
+--ink: #f9ead6;
+--ink-soft: #cda887;
+--accent: #ffa245;
+--accent-deep: #ffb066;
+--accent-soft: #4d3319;
+--line: #5a3f27;
+--good: #7fd6a4;
+--shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+}
+* { box-sizing: border-box;}
+html, body { margin: 0; padding: 0;}
+body {
+font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+font-size: 16px;
+line-height: 1.6;
+color: var(--ink);
+background:
+radial-gradient(circle at 12% 8%, var(--bg-soft) 0, transparent 42%),
+radial-gradient(circle at 88% 92%, var(--bg-soft) 0, transparent 40%),
+var(--bg);
+min-height: 100vh;
+overflow-x: hidden;
+-webkit-tap-highlight-color: transparent;
+}
+.wrap {
+max-width: 560px;
+margin: 0 auto;
+padding: 20px 18px calc(28px + env(safe-area-inset-bottom));
+}
+.display-font { font-family: "ZCOOL KuaiLe", "PingFang SC", "Microsoft YaHei", sans-serif;}
+
+/* ---------- views ---------- */
+.view { display: none;}
+.view.active { display: block;}
+
+/* ---------- home ---------- */
+.home { text-align: center; padding-top: 5vh;}
+.paw-row { font-size: 20px; letter-spacing: 14px; opacity: 0.55; user-select: none;}
+.hero-cat {
+font-size: 118px;
+line-height: 1.15;
+margin: 10px 0 2px;
+display: inline-block;
+animation: bob 2.6s ease-in-out infinite;
+user-select: none;
+}
+@keyframes bob {
+0%, 100% { transform: translateY(0) rotate(-2deg);}
+50% { transform: translateY(-10px) rotate(2deg);}
+}
+h1.title {
+font-size: 44px;
+margin: 6px 0 8px;
+letter-spacing: 2px;
+color: var(--ink);
+}
+.subtitle { color: var(--ink-soft); font-size: 17px; margin: 0 0 30px;}
+.btn {
+appearance: none;
+border: none;
+cursor: pointer;
+font-family: inherit;
+font-size: 18px;
+font-weight: 700;
+border-radius: 999px;
+padding: 14px 34px;
+min-height: 52px;
+transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.btn-primary {
+background: var(--accent);
+color: #fff;
+box-shadow: 0 8px 20px rgba(239, 131, 34, 0.38);
+}
+.btn-primary:hover { background: var(--accent-deep); transform: translateY(-2px);}
+.btn-primary:active { transform: scale(0.97);}
+.btn-ghost {
+background: var(--card);
+color: var(--ink);
+border: 2px solid var(--line);
+box-shadow: none;
+}
+.btn-ghost:hover { border-color: var(--accent);}
+.home-cats { margin-top: 38px; color: var(--ink-soft); font-size: 15px;}
+.home-cats .faces { font-size: 26px; letter-spacing: 6px; margin-bottom: 6px;}
+
+/* ---------- quiz ---------- */
+.progress-track {
+height: 12px;
+background: var(--accent-soft);
+border-radius: 999px;
+overflow: hidden;
+margin: 4px 0 6px;
+}
+.progress-fill {
+height: 100%;
+width: 0%;
+background: linear-gradient(90deg, var(--accent), #ffb25e);
+border-radius: 999px;
+transition: width 0.35s ease;
+}
+.quiz-top {
+display: flex;
+align-items: center;
+justify-content: space-between;
+min-height: 44px;
+margin-bottom: 6px;
+}
+.back-btn {
+appearance: none;
+border: none;
+background: transparent;
+color: var(--accent-deep);
+font-family: inherit;
+font-size: 16px;
+font-weight: 700;
+cursor: pointer;
+padding: 10px 12px 10px 2px;
+min-height: 44px;
+visibility: hidden;
+}
+.back-btn.show { visibility: visible;}
+.q-count { color: var(--ink-soft); font-size: 15px; font-weight: 600;}
+.q-card {
+background: var(--card);
+border: 2px solid var(--line);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+padding: 26px 20px 22px;
+}
+.q-card.slide-in { animation: slideIn 0.32s ease;}
+@keyframes slideIn {
+from { opacity: 0; transform: translateX(26px);}
+to { opacity: 1; transform: translateX(0);}
+}
+.q-card.slide-back { animation: slideBack 0.32s ease;}
+@keyframes slideBack {
+from { opacity: 0; transform: translateX(-26px);}
+to { opacity: 1; transform: translateX(0);}
+}
+.q-text { font-size: 21px; font-weight: 700; margin: 0 0 20px; line-height: 1.5;}
+.options { display: flex; flex-direction: column; gap: 12px;}
+.opt {
+appearance: none;
+display: flex;
+align-items: center;
+gap: 12px;
+width: 100%;
+text-align: left;
+font-family: inherit;
+font-size: 16.5px;
+color: var(--ink);
+background: var(--bg);
+border: 2px solid var(--line);
+border-radius: 16px;
+padding: 14px 16px;
+min-height: 56px;
+cursor: pointer;
+transition: border-color 0.15s ease, background 0.15s ease;
+}
+.opt:hover { border-color: var(--accent);}
+.opt .letter {
+flex: 0 0 auto;
+width: 32px; height: 32px;
+border-radius: 50%;
+background: var(--accent-soft);
+color: var(--accent-deep);
+font-weight: 800;
+display: flex; align-items: center; justify-content: center;
+font-size: 15px;
+}
+.opt .opt-text { flex: 1 1 auto;}
+.opt .check {
+flex: 0 0 auto;
+width: 26px; height: 26px;
+border-radius: 50%;
+background: var(--accent);
+color: #fff;
+font-size: 15px;
+font-weight: 800;
+display: none;
+align-items: center; justify-content: center;
+}
+.opt.selected {
+border: 3px solid var(--accent);
+background: var(--accent-soft);
+font-weight: 700;
+}
+.opt.selected .letter { background: var(--accent); color: #fff;}
+.opt.selected .check { display: flex;}
+.opt.pop { animation: pop 0.35s ease;}
+@keyframes pop {
+0% { transform: scale(1);}
+40% { transform: scale(1.045);}
+100% { transform: scale(1);}
+}
+.quiz-hint { text-align: center; color: var(--ink-soft); font-size: 14px; margin-top: 16px;}
+
+/* ---------- result ---------- */
+.result-head { text-align: center;}
+.result-kicker { color: var(--ink-soft); font-size: 16px; margin: 8px 0 0;}
+.cat-name {
+font-size: 52px;
+margin: 2px 0 0;
+letter-spacing: 3px;
+display: inline-block;
+}
+.cat-name.stamp { animation: stamp 0.55s cubic-bezier(0.2, 1.6, 0.4, 1) both;}
+@keyframes stamp {
+0% { transform: scale(2.4) rotate(-10deg); opacity: 0;}
+60% { transform: scale(0.92) rotate(2deg); opacity: 1;}
+100% { transform: scale(1) rotate(0deg); opacity: 1;}
+}
+.cat-tag { color: var(--accent-deep); font-weight: 700; font-size: 17px; margin: 2px 0 14px;}
+.ink-card {
+border-radius: 28px;
+padding: 30px 16px 24px;
+text-align: center;
+box-shadow: var(--shadow);
+position: relative;
+overflow: hidden;
+}
+.ink-card::before,.ink-card::after {
+content: "🐾";
+position: absolute;
+font-size: 30px;
+opacity: 0.35;
+}
+.ink-card::before { top: 10px; left: 14px; transform: rotate(-18deg);}
+.ink-card::after { bottom: 10px; right: 14px; transform: rotate(20deg);}
+.ink-emoji { font-size: 110px; line-height: 1.2; user-select: none;}
+.ink-quote { font-size: 19px; font-weight: 700; margin: 10px 8px 0; line-height: 1.55;}
+.resonance { margin-top: 18px; font-size: 16px; color: var(--ink-soft);}
+.resonance b { font-size: 30px; color: var(--accent-deep); vertical-align: -4px; margin: 0 2px;}
+.block {
+background: var(--card);
+border: 2px solid var(--line);
+border-radius: var(--radius);
+box-shadow: var(--shadow);
+padding: 18px 20px;
+margin-top: 16px;
+}
+.block h3 { margin: 0 0 10px; font-size: 18px;}
+.block p { margin: 0;}
+.traits { display: flex; flex-wrap: wrap; gap: 9px;}
+.trait {
+background: var(--accent-soft);
+border: 1.5px solid var(--line);
+border-radius: 999px;
+padding: 7px 14px;
+font-size: 15.5px;
+font-weight: 600;
+}
+.result-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 22px;}
+.result-actions .btn { width: 100%;}
+.toast {
+position: fixed;
+left: 50%;
+bottom: calc(30px + env(safe-area-inset-bottom));
+transform: translateX(-50%) translateY(20px);
+background: var(--ink);
+color: var(--bg);
+padding: 11px 22px;
+border-radius: 999px;
+font-size: 16px;
+font-weight: 600;
+opacity: 0;
+pointer-events: none;
+transition: opacity 0.25s ease, transform 0.25s ease;
+z-index: 60;
+white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0);}
+
+/* ---------- poster modal ---------- */
+.modal {
+position: fixed; inset: 0;
+background: rgba(40, 24, 10, 0.62);
+display: none;
+align-items: center; justify-content: center;
+padding: 18px;
+z-index: 50;
+}
+.modal.open { display: flex;}
+.modal-box {
+background: var(--card);
+border-radius: 24px;
+padding: 18px;
+max-width: 400px;
+width: 100%;
+max-height: 92vh;
+overflow-y: auto;
+text-align: center;
+}
+.modal-box img { width: 100%; height: auto; border-radius: 14px; display: block;}
+.modal-box p { color: var(--ink-soft); font-size: 15px; margin: 12px 0;}
+.modal-actions { display: flex; gap: 10px;}
+.modal-actions .btn { flex: 1; padding: 12px 10px; font-size: 16px;}
+
+@media (prefers-reduced-motion: reduce) {
+.hero-cat,.opt.pop,.cat-name.stamp,.q-card.slide-in,.q-card.slide-back { animation: none!important;}
+.progress-fill,.btn,.opt,.toast { transition: none!important;}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<!-- 首页 -->
+<section id="view-home" class="view active">
+<div class="home">
+<div class="paw-row" aria-hidden="true">🐾 🐾 🐾</div>
+<div class="hero-cat" aria-hidden="true">🐱</div>
+<h1 class="title display-font">测测你是哪种猫</h1>
+<p class="subtitle">10 题 · 约 1 分钟 · 凭直觉选，别想太久</p>
+<button class="btn btn-primary" id="btn-start" type="button">开始测试 🐾</button>
+<div class="home-cats">
+<div class="faces" aria-hidden="true">🐱 🐈 😺 🐈‍⬛ 😸</div>
+<div>布偶 · 橘猫 · 英短 · 黑猫 · 狸花 · 暹罗 · 三花，看看你是哪一只</div>
+</div>
+</div>
+</section>
+
+<!-- 答题页 -->
+<section id="view-quiz" class="view">
+<div class="progress-track" role="progressbar" aria-label="答题进度" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progress-bar">
+<div class="progress-fill" id="progress-fill"></div>
+</div>
+<div class="quiz-top">
+<button class="back-btn" id="btn-back" type="button">← 上一题</button>
+<span class="q-count" id="q-count">第 1 / 10 题</span>
+</div>
+<div class="q-card" id="q-card">
+<p class="q-text" id="q-text"></p>
+<div class="options" id="options"></div>
+</div>
+<p class="quiz-hint">凭第一直觉选，也可以按键盘 1–4 / A–D</p>
+</section>
+
+<!-- 结果页 -->
+<section id="view-result" class="view">
+<div class="result-head">
+<p class="result-kicker">铛铛铛——你是一只</p>
+<h2 class="cat-name display-font" id="r-name"></h2>
+<p class="cat-tag" id="r-tag"></p>
+</div>
+<div class="ink-card" id="r-ink">
+<div class="ink-emoji" id="r-emoji" aria-hidden="true"></div>
+<p class="ink-quote" id="r-quote"></p>
+<p class="resonance">与你的共鸣度 <b id="r-score"></b></p>
+</div>
+
+<div class="block">
+<h3>🐾 性格特点</h3>
+<div class="traits" id="r-traits"></div>
+</div>
+<div class="block">
+<h3>💡 为什么是你</h3>
+<p id="r-reason"></p>
+</div>
+<div class="block">
+<h3>✨ 隐藏优势</h3>
+<p id="r-advantage"></p>
+</div>
+<div class="block">
+<h3>🎁 趣味彩蛋</h3>
+<p id="r-egg"></p>
+</div>
+
+<div class="result-actions">
+<button class="btn btn-primary" id="btn-poster" type="button">生成分享海报 🖼️</button>
+<button class="btn btn-ghost" id="btn-copy" type="button">复制文案 📋</button>
+<button class="btn btn-ghost" id="btn-restart" type="button">重新测一次 ↺</button>
+</div>
+</section>
+</main>
+
+<!-- 海报弹窗 -->
+<div class="modal" id="poster-modal" role="dialog" aria-modal="true" aria-label="分享海报">
+<div class="modal-box">
+<img id="poster-img" alt="你的猫咪测试结果分享海报" />
+<p>长按图片即可保存到相册，或点下方按钮下载</p>
+<div class="modal-actions">
+<a class="btn btn-primary" id="poster-download" download="我是哪种猫.png" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">保存海报</a>
+<button class="btn btn-ghost" id="poster-close" type="button">关闭</button>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast">已复制，去分享给朋友吧 🎉</div>
+<canvas id="poster-canvas" width="1080" height="1350" style="display:none;"></canvas>
+
+<script>
+"use strict";
+
+/* ============ 数据 ============ */
+// 猫的顺序即并列时的固定优先级参考（实际并列取先达到者）
+var CATS = {
+ragdoll: {
+name: "布偶猫", tag: "高冷优雅 · 猫界贵族", emoji: "🐱", color: "#cdb2ec", colorSoft: "#efe6fb",
+quote: "优雅是天生的，温柔是刻进骨子里的",
+traits: ["气质出众", "慢热但深情", "颜值即正义"],
+reason: "你的答案里藏着慢慢来的节奏感：喜欢晒太阳、享受安静，待人温和又有分寸——这正是布偶猫骨子里的贵族气质。",
+advantage: "关键时刻特别靠谱，越是重要的事你越沉得住气。",
+egg: "你其实是猫界的贵族，走到哪都有人想 rua。"
+},
+orange: {
+name: "橘猫", tag: "社牛干饭王 · 快乐源泉", emoji: "🐈", color: "#ffb25e", colorSoft: "#ffeeda",
+quote: "干饭人干饭魂，快乐就是吃饱喝足",
+traits: ["自来熟", "乐观派", "走到哪都有朋友"],
+reason: "你的选择快乐又直接：饿了就吃、开心就约朋友，人生苦短必须快乐排第一——橘猫本猫没错了。",
+advantage: "抗压能力满分，天大的事吃顿好的睡一觉就过去了。",
+egg: "十只橘猫九只胖，还有一只在长胖的路上。"
+},
+british: {
+name: "英短", tag: "稳重宅家 · 靠谱本谱", emoji: "😺", color: "#a8c6de", colorSoft: "#e7f0f8",
+quote: "稳住，我们能赢",
+traits: ["情绪稳定", "宅得心安理得", "靠谱本谱"],
+reason: "你偏爱稳定和舒适，作息规律、情绪平稳，热闹之外更享受自己的小世界——英短的稳重，说的就是你。",
+advantage: "越是大事越冷静，是朋友眼里最让人安心的存在。",
+egg: "你的快乐很简单：一张沙发、一杯奶茶、一下午。"
+},
+black: {
+name: "黑猫", tag: "深夜 emo · 神秘思考者", emoji: "🐈‍⬛", color: "#9a8aa8", colorSoft: "#eae4f0",
+quote: "深夜的思考者，白天的高冷者",
+traits: ["外冷内热", "直觉超准", "独处充电"],
+reason: "你习惯在夜里和独处中充电，观察敏锐、不轻易表态，开心和难过都先自己消化——黑猫的神秘感在你身上藏不住。",
+advantage: "看人特别准，谁是真心谁是客套，你一眼就懂。",
+egg: "传说黑猫带来好运，你就是行走的好运。"
+},
+tabby: {
+name: "狸花猫", tag: "机灵野性 · 天生玩家", emoji: "🐱", color: "#b5cf8a", colorSoft: "#eef5df",
+quote: "机灵鬼，走到哪都是主场",
+traits: ["反应快", "好奇心旺盛", "适应力超强"],
+reason: "你好奇心强、行动力拉满，新鲜的地方和新鲜的事永远排第一，脑子转得比谁都快——狸花猫的机灵劲儿就是你。",
+advantage: "学什么都快，新环境、新技能，上手就是比别人早一步。",
+egg: "你小时候一定是孩子王。"
+},
+siamese: {
+name: "暹罗猫", tag: "话痨粘人 · 气氛组组长", emoji: "😸", color: "#f2b8c6", colorSoft: "#fdeef2",
+quote: "话痨本痨，粘人精本精",
+traits: ["表达欲爆棚", "热情真诚", "害怕冷场"],
+reason: "你表达欲旺盛、热情又粘人，开心要说出来才痛快，不开心也要找人聊聊——暹罗的话痨属性和你完美对上。",
+advantage: "社交场合从不尴尬，有你在就没有冷场的局。",
+egg: "你的嗓门一开，全场都是你的听众。"
+},
+calico: {
+name: "三花猫", tag: "随性自由 · 幸运本运", emoji: "🐈", color: "#f6c177", colorSoft: "#fdf0dd",
+quote: "自由是我的信仰",
+traits: ["随性洒脱", "审美在线", "活得通透"],
+reason: "你的答案里全是「看心情」：不被规则绑住，走到哪算哪，开心最重要——三花猫的自由洒脱就是你的底色。",
+advantage: "永远有 Plan B，此路不通就换条路，反正你不慌。",
+egg: "三花是猫界的幸运色，你也是。"
+}
+};
+
+// 每题选项：t 文案，s 为 [主维度 +2, 次维度 +1]
+var QUESTIONS = [
+{ q: "周末早上你一般几点醒？", opts: [
+{ t: "闹钟响前自然醒，去晒太阳", s: ["ragdoll", "siamese"]},
+{ t: "被饿醒，直奔厨房", s: ["orange", "calico"]},
+{ t: "睡到中午，谁也别吵我", s: ["british", "black"]},
+{ t: "看心情，醒了就起来浪", s: ["calico", "tabby"]}]},
+{ q: "朋友突然约你出门，你的第一反应？", opts: [
+{ t: "好呀好呀，马上出门！", s: ["orange", "siamese"]},
+{ t: "先问去哪、跟谁、有没有好吃的", s: ["tabby", "orange"]},
+{ t: "让我想想……要不下次？", s: ["british", "ragdoll"]},
+{ t: "看心情，兴致来了就去", s: ["black", "calico"]}]},
+{ q: "你最喜欢待着的地方？", opts: [
+{ t: "阳光充足的窗边", s: ["ragdoll", "calico"]},
+{ t: "沙发正中央，C 位", s: ["orange", "british"]},
+{ t: "安静的角落，没人打扰", s: ["black", "british"]},
+{ t: "哪里新鲜去哪里", s: ["tabby", "siamese"]}]},
+{ q: "遇到不开心的事，你会？", opts: [
+{ t: "找人倾诉，说出来就好了", s: ["siamese", "orange"]},
+{ t: "吃一顿好的，立刻满血复活", s: ["orange", "calico"]},
+{ t: "自己消化，睡一觉就好", s: ["black", "british"]},
+{ t: "换个地方散散心", s: ["tabby", "ragdoll"]}]},
+{ q: "你的吃饭风格？", opts: [
+{ t: "干饭第一名，光盘是信仰", s: ["orange", "tabby"]},
+{ t: "细嚼慢咽，优雅进食", s: ["ragdoll", "british"]},
+{ t: "看心情，今天想吃这个明天那个", s: ["calico", "orange"]},
+{ t: "深夜食堂，半夜才有胃口", s: ["black", "calico"]}]},
+{ q: "在一群人里你通常是？", opts: [
+{ t: "气氛担当，话最多的那个", s: ["siamese", "orange"]},
+{ t: "默默观察，关键时刻才开口", s: ["black", "tabby"]},
+{ t: "优雅端坐，自带贵气", s: ["ragdoll", "british"]},
+{ t: "自由游走，谁聊得来贴谁", s: ["calico", "tabby"]}]},
+{ q: "你的作息是？", opts: [
+{ t: "早睡早起，规律得像时钟", s: ["british", "ragdoll"]},
+{ t: "夜猫子，越晚越精神", s: ["black", "siamese"]},
+{ t: "随性，困了就睡饿了就吃", s: ["calico", "orange"]},
+{ t: "白天补觉，傍晚出动", s: ["tabby", "black"]}]},
+{ q: "别人夸你可爱，你会？", opts: [
+{ t: "害羞但心里偷偷开心", s: ["ragdoll", "siamese"]},
+{ t: "理直气壮：我本来就可爱", s: ["orange", "calico"]},
+{ t: "淡淡一笑，习以为常", s: ["british", "black"]},
+{ t: "立刻表演一个才艺回敬", s: ["tabby", "siamese"]}]},
+{ q: "你的理想假期？", opts: [
+{ t: "躺平度假，晒太阳发呆", s: ["british", "ragdoll"]},
+{ t: "到处逛吃，走到哪吃到哪", s: ["orange", "tabby"]},
+{ t: "探险猎奇，越野越好玩", s: ["tabby", "calico"]},
+{ t: "随心所欲，走到哪算哪", s: ["calico", "black"]}]},
+{ q: "如果用一个词形容你？", opts: [
+{ t: "温柔", s: ["ragdoll", "british"]},
+{ t: "热情", s: ["siamese", "orange"]},
+{ t: "神秘", s: ["black", "tabby"]},
+{ t: "自由", s: ["calico", "orange"]}]}
+];
+
+var LETTERS = ["A", "B", "C", "D"];
+var TOTAL = QUESTIONS.length;
+
+/* ============ 状态 ============ */
+var current = 0; // 当前题号 0-9
+var answers = new Array(TOTAL).fill(null); // 每题选的选项下标
+var locked = false; // 选中后短暂锁定，防重复点击
+var result = null; // { key, score, resonance}
+
+var $ = function (id) { return document.getElementById(id);};
+var views = { home: $("view-home"), quiz: $("view-quiz"), result: $("view-result")};
+var reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function showView(name) {
+Object.keys(views).forEach(function (k) { views[k].classList.toggle("active", k === name);});
+window.scrollTo(0, 0);
+}
+
+/* ============ 答题 ============ */
+function renderQuestion(dir) {
+var q = QUESTIONS[current];
+$("q-text").textContent = (current + 1) + ". " + q.q;
+$("q-count").textContent = "第 " + (current + 1) + " / " + TOTAL + " 题";
+$("btn-back").classList.toggle("show", current > 0);
+$("progress-fill").style.width = (current / TOTAL * 100) + "%";
+$("progress-bar").setAttribute("aria-valuenow", String(current));
+
+var box = $("options");
+box.innerHTML = "";
+q.opts.forEach(function (opt, i) {
+var btn = document.createElement("button");
+btn.type = "button";
+btn.className = "opt" + (answers[current] === i? " selected": "");
+btn.setAttribute("aria-pressed", answers[current] === i? "true": "false");
+var letter = document.createElement("span");
+letter.className = "letter";
+letter.textContent = LETTERS[i];
+var text = document.createElement("span");
+text.className = "opt-text";
+text.textContent = opt.t;
+var check = document.createElement("span");
+check.className = "check";
+check.textContent = "✓";
+btn.appendChild(letter);
+btn.appendChild(text);
+btn.appendChild(check);
+btn.addEventListener("click", function () { choose(i, btn);});
+box.appendChild(btn);
+});
+
+var card = $("q-card");
+card.classList.remove("slide-in", "slide-back");
+void card.offsetWidth; // 重启动画
+card.classList.add(dir === "back"? "slide-back": "slide-in");
+}
+
+function choose(i, btn) {
+if (locked) return;
+locked = true;
+answers[current] = i;
+
+var opts = $("options").children;
+for (var k = 0; k < opts.length; k++) {
+opts[k].classList.toggle("selected", k === i);
+opts[k].setAttribute("aria-pressed", k === i? "true": "false");
+}
+if (!reducedMotion) {
+btn.classList.remove("pop");
+void btn.offsetWidth;
+btn.classList.add("pop");
+}
+$("progress-fill").style.width = ((current + 1) / TOTAL * 100) + "%";
+$("progress-bar").setAttribute("aria-valuenow", String(current + 1));
+
+setTimeout(function () {
+locked = false;
+if (current < TOTAL - 1) {
+current++;
+renderQuestion("next");
+} else {
+finish();
+}
+}, reducedMotion? 60: 350);
+}
+
+function goBack() {
+if (locked || current === 0) return;
+current--;
+renderQuestion("back");
+}
+
+/* ============ 计分 ============ */
+function computeResult() {
+var keys = Object.keys(CATS);
+var scores = {}, reachedAt = {};
+keys.forEach(function (k) { scores[k] = 0;});
+// 逐题累加，记录每只猫「达到其最终分数」的最早题号，用于并列裁决
+var running = {};
+keys.forEach(function (k) { running[k] = 0;});
+var snapshots = [];
+for (var qi = 0; qi < TOTAL; qi++) {
+var s = QUESTIONS[qi].opts[answers[qi]].s;
+running[s[0]] += 2;
+running[s[1]] += 1;
+var snap = {};
+keys.forEach(function (k) { snap[k] = running[k];});
+snapshots.push(snap);
+}
+keys.forEach(function (k) { scores[k] = running[k];});
+var max = Math.max.apply(null, keys.map(function (k) { return scores[k];}));
+keys.forEach(function (k) {
+reachedAt[k] = TOTAL; // 兜底
+if (scores[k] === max) {
+for (var qi2 = 0; qi2 < TOTAL; qi2++) {
+if (snapshots[qi2][k] === max) { reachedAt[k] = qi2; break;}
+}
+}
+});
+var winner = keys.filter(function (k) { return scores[k] === max;})
+.sort(function (a, b) { return reachedAt[a] - reachedAt[b];})[0];
+var resonance = Math.round(62 + 38 * max / 20);
+return { key: winner, score: max, resonance: resonance};
+}
+
+function finish() {
+result = computeResult();
+var cat = CATS[result.key];
+$("r-name").textContent = cat.name;
+$("r-tag").textContent = cat.tag;
+$("r-emoji").textContent = cat.emoji;
+$("r-quote").textContent = "「" + cat.quote + "」";
+$("r-score").textContent = result.resonance + "%";
+var ink = $("r-ink");
+ink.style.background = "linear-gradient(150deg, " + cat.colorSoft + " 0%, " + cat.color + " 130%)";
+var traits = $("r-traits");
+traits.innerHTML = "";
+cat.traits.forEach(function (t) {
+var span = document.createElement("span");
+span.className = "trait";
+span.textContent = t;
+traits.appendChild(span);
+});
+$("r-reason").textContent = cat.reason;
+$("r-advantage").textContent = cat.advantage;
+$("r-egg").textContent = cat.egg;
+
+showView("result");
+var nameEl = $("r-name");
+nameEl.classList.remove("stamp");
+void nameEl.offsetWidth;
+nameEl.classList.add("stamp");
+}
+
+function shareText() {
+var cat = CATS[result.key];
+return "🐱 我在「测测你是哪种猫」里测出了！「" + cat.quote +
+"」共鸣度 " + result.resonance + "%～你是哪种猫？快来测测！";
+}
+
+/* ============ 海报 ============ */
+function drawPoster() {
+var cat = CATS[result.key];
+var cv = $("poster-canvas");
+var ctx = cv.getContext("2d");
+var W = 1080, H = 1350;
+
+ctx.fillStyle = "#fff4e3";
+ctx.fillRect(0, 0, W, H);
+
+// 装饰圆点
+ctx.fillStyle = cat.color;
+ctx.globalAlpha = 0.35;
+[[90, 120, 46], [970, 90, 30], [1010, 420, 52], [70, 1080, 38], [950, 1180, 44], [150, 700, 24]].forEach(function (c) {
+ctx.beginPath(); ctx.arc(c[0], c[1], c[2], 0, Math.PI * 2); ctx.fill();
+});
+ctx.globalAlpha = 1;
+
+// 中央墨水卡
+var grad = ctx.createLinearGradient(0, 300, 0, 900);
+grad.addColorStop(0, cat.colorSoft);
+grad.addColorStop(1, cat.color);
+ctx.fillStyle = grad;
+roundRect(ctx, 90, 300, W - 180, 590, 48);
+ctx.fill();
+
+ctx.textAlign = "center";
+ctx.fillStyle = "#8a6a52";
+ctx.font = "600 40px 'PingFang SC','Microsoft YaHei',sans-serif";
+ctx.fillText("🐾 测测你是哪种猫 🐾", W / 2, 170);
+
+ctx.fillStyle = "#4a3222";
+ctx.font = "44px 'PingFang SC','Microsoft YaHei',sans-serif";
+ctx.fillText("我是一只", W / 2, 262);
+
+ctx.font = "190px sans-serif";
+ctx.fillText(cat.emoji, W / 2, 560);
+
+ctx.fillStyle = "#4a3222";
+ctx.font = "bold 96px 'ZCOOL KuaiLe','PingFang SC','Microsoft YaHei',sans-serif";
+ctx.fillText(cat.name, W / 2, 740);
+
+ctx.fillStyle = "#7a5638";
+ctx.font = "600 38px 'PingFang SC','Microsoft YaHei',sans-serif";
+ctx.fillText(cat.tag, W / 2, 812);
+
+ctx.fillStyle = "#4a3222";
+ctx.font = "bold 46px 'PingFang SC','Microsoft YaHei',sans-serif";
+wrapText(ctx, "「" + cat.quote + "」", W / 2, 990, W - 200, 62);
+
+ctx.fillStyle = "#d96f0e";
+ctx.font = "bold 54px 'PingFang SC','Microsoft YaHei',sans-serif";
+ctx.fillText("共鸣度 " + result.resonance + "%", W / 2, 1130);
+
+ctx.fillStyle = "#8a6a52";
+ctx.font = "34px 'PingFang SC','Microsoft YaHei',sans-serif";
+ctx.fillText("10 题小测试 · 你是哪种猫？", W / 2, 1250);
+
+return cv.toDataURL("image/png");
+}
+function roundRect(ctx, x, y, w, h, r) {
+ctx.beginPath();
+ctx.moveTo(x + r, y);
+ctx.arcTo(x + w, y, x + w, y + h, r);
+ctx.arcTo(x + w, y + h, x, y + h, r);
+ctx.arcTo(x, y + h, x, y, r);
+ctx.arcTo(x, y, x + w, y, r);
+ctx.closePath();
+}
+function wrapText(ctx, text, cx, y, maxWidth, lineHeight) {
+var chars = text.split("");
+var line = "", lines = [];
+for (var i = 0; i < chars.length; i++) {
+var test = line + chars[i];
+if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = chars[i];}
+else line = test;
+}
+if (line) lines.push(line);
+lines.forEach(function (l, idx) { ctx.fillText(l, cx, y + idx * lineHeight);});
+}
+
+/* ============ 复制 ============ */
+var toastTimer = null;
+function showToast(msg) {
+var t = $("toast");
+t.textContent = msg;
+t.classList.add("show");
+clearTimeout(toastTimer);
+toastTimer = setTimeout(function () { t.classList.remove("show");}, 2200);
+}
+function copyText(text) {
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(text).then(function () {
+showToast("已复制，去分享给朋友吧 🎉");
+}, function () { fallbackCopy(text);});
+} else {
+fallbackCopy(text);
+}
+}
+function fallbackCopy(text) {
+var ta = document.createElement("textarea");
+ta.value = text;
+ta.style.position = "fixed";
+ta.style.opacity = "0";
+document.body.appendChild(ta);
+ta.select();
+try {
+document.execCommand("copy");
+showToast("已复制，去分享给朋友吧 🎉");
+} catch (e) {
+showToast("复制失败，长按海报保存图片分享吧");
+}
+document.body.removeChild(ta);
+}
+
+/* ============ 事件 ============ */
+$("btn-start").addEventListener("click", function () {
+current = 0;
+answers = new Array(TOTAL).fill(null);
+locked = false;
+showView("quiz");
+renderQuestion("next");
+});
+$("btn-back").addEventListener("click", goBack);
+$("btn-restart").addEventListener("click", function () {
+current = 0;
+answers = new Array(TOTAL).fill(null);
+result = null;
+showView("home");
+});
+$("btn-copy").addEventListener("click", function () { if (result) copyText(shareText());});
+$("btn-poster").addEventListener("click", function () {
+if (!result) return;
+var url = drawPoster();
+$("poster-img").src = url;
+var dl = $("poster-download");
+dl.href = url;
+dl.setAttribute("download", "我是" + CATS[result.key].name + ".png");
+$("poster-modal").classList.add("open");
+});
+$("poster-close").addEventListener("click", function () { $("poster-modal").classList.remove("open");});
+$("poster-modal").addEventListener("click", function (e) {
+if (e.target === this) this.classList.remove("open");
+});
+
+document.addEventListener("keydown", function (e) {
+if (!views.quiz.classList.contains("active")) return;
+if ($("poster-modal").classList.contains("open")) return;
+var idx = -1;
+if (e.key >= "1" && e.key <= "4") idx = Number(e.key) - 1;
+else {
+var k = e.key.toUpperCase();
+if (k >= "A" && k <= "D") idx = k.charCodeAt(0) - 65;
+}
+if (idx >= 0) {
+var btn = $("options").children[idx];
+if (btn) choose(idx, btn);
+}
+});
+</script>
+</body>
+</html>
